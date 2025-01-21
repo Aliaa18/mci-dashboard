@@ -1,7 +1,7 @@
 {
   "name": "dashboard",
   "version": "0.1.0",
-  "homepage":"https://Aliaa18.github.io/mcidashboard",
+  "homepage":"https://Aliaa18.github.io/mci-dashboard",
   "private": true,
   "dependencies": {
     "@emotion/css": "^11.13.5",

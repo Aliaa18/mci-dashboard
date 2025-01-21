@@ -1,5 +1,5 @@
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
 import  { Toaster } from 'react-hot-toast';
 import './App.css';
 import Home from './Components/Home/Home';
@@ -11,7 +11,7 @@ import Orders from './Components/Orders/Orders';
 import Users from './Components/Users/Users';
 
 function App() {
-  let router = createBrowserRouter([
+  let router = createHashRouter([
     {
        path:"/" ,element:<Layout/> , children:[
         { index:true , element:<Products/>},
