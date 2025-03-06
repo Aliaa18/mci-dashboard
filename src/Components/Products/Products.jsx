@@ -157,7 +157,7 @@ export default function Products({ existingImages = [] }) {
     async function getProducts(){
     try {
       const {data} = await axios.get('https://mcishop.vercel.app/api/v1/products')
-         console.log(data);
+         
       //setProducts(data?.products)
            const transData = data?.products.map((pro)=>({
           
@@ -292,7 +292,7 @@ export default function Products({ existingImages = [] }) {
      async function getBrands(){
       try {
         const {data} = await axios.get('https://mcishop.vercel.app/api/v1/brands')
-           console.log(data);
+           
         setBrands(data?.brands)
             //  const transData = data?.brands.map((brand)=>({
             
@@ -310,7 +310,7 @@ export default function Products({ existingImages = [] }) {
      async function getCategories(){
       try {
         const {data} = await axios.get('https://mcishop.vercel.app/api/v1/categories')
-           console.log(data);
+          
         setCats(data?.categories)
             //  const transData = data?.brands.map((brand)=>({
             
