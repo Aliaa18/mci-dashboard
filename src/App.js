@@ -9,6 +9,9 @@ import Brands from './Components/Brands/Brands';
 import Sidebar from './Components/SideBar/Sidebar';
 import Orders from './Components/Orders/Orders';
 import Users from './Components/Users/Users';
+import Categories from './Components/Categories/Categories';
+import Subcategories from './Components/Subcategories/Subcategories';
+import Catdetails from './Components/Catdetails/Catdetails';
 
 function App() {
   let router = createHashRouter([
@@ -17,6 +20,9 @@ function App() {
         { index:true , element:<Products/>},
         {path:"/products" , element:<Products/>},
         {path:"/brands" , element:<Brands/>},
+        {path:"/categories" , element:<Categories/>},
+        {path:"/categories/:slug" , element:<Catdetails/>},
+        {path:"/subcategories" , element:<Subcategories/>},
         {path:"/orders" , element:<Orders/>},
         {path:"/users" , element:<Users/>},
         {path:"/sidebar" , element:<Sidebar/>},

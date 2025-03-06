@@ -12,23 +12,37 @@ import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet';
 
 
-export default function Products() {
+export default function Products({ existingImages = [] }) {
    let [rows , setRows] = useState(null)
-   const [selectedRows, setSelectedRows] = useState([]);
-    let [products , setProducts] = useState(null)
     let [loading , setLoading] = useState(true)
     let [visible , setVisible] = useState(false)
     let [editMode , seteditMode] = useState(false)
+    let [brands , setBrands] = useState(null)
+    let [cats , setCats] = useState(null)
+    
+    const [selectedImages, setSelectedImages] = useState([]);
+    useEffect(() => {
+      if (editMode && existingImages) {
+        setSelectedImages(existingImages); // Keep existing images in state
+      }
+    }, [editMode, existingImages]);
+  
+    const handleImageChange = (event) => {
+      const files = Array.from(event.target.files);
+      setSelectedImages(files);
+    };
     const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   let [formData , setFormData] = useState({
     title: '',
     price: '',
     brand_id: '',
+    subcategory_id:'',
     stock: '',
     description: ' ',
     features:' ',
     cover_image: null,
+    images:[]
    })
    let {register , handleSubmit, setValue , formState:{errors} , reset } = useForm();
   
@@ -53,6 +67,7 @@ export default function Products() {
         description: ' ',
         features:' ',
         cover_image: '',
+        images:[],
       });
       reset()
     }
@@ -66,6 +81,7 @@ export default function Products() {
   const handleClose = () => {
     setOpen(false);
     setSelectedRow(null);
+
   };
     const columns = [
       { field: 'id', headerName: 'ID', width: 100 },
@@ -131,7 +147,7 @@ export default function Products() {
     } else {
       console.log(values);
       addProduct(values)
-        reset()
+       
    setTimeout(()=>{
     closeDialog()
    } , 2000)
@@ -150,11 +166,15 @@ export default function Products() {
             title: pro.title,
             price: pro.price,
             brand_id:pro.brand_id?._id || '--',
+            subcategory_id:pro.subcategory_id?._id || '--',
             brand: pro.brand_id?.name || '--',
+            category: pro.category_id?.name || '--',
+            subcategory: pro.subcategory_id?.name || '--',
             stock:pro.stock,
             description:pro.description,
             features:pro.features,
             cover_image:pro.cover_image.path,
+            images:pro.images,
             createdAt: pro.createdAt.slice(0,19).replace('T' , ' , '),
             updatedAt: pro.updatedAt.slice(0,19).replace('T' , ' , '),
            }))
@@ -208,10 +228,19 @@ export default function Products() {
         formData.append("price", data.price);
         formData.append("stock", data.stock);
         formData.append("brand_id", data.brand_id);
+        formData.append("subcategory_id", data.subcategory_id);
         formData.append("description", data.description);
         formData.append("features", data.features);
         if (data.cover_image && data.cover_image[0]) {
           formData.append("cover_image", data.cover_image[0]);
+        }
+        console.log("Images Data:", data);
+         console.log("Type of images:", typeof data.images);
+
+         if (data.images instanceof FileList) {
+          Array.from(data.images).forEach((image, index) => {
+            formData.append(`images`, image);
+          });
         }
         let res = await axios.post('https://mcishop.vercel.app/api/v1/products' , formData , {
           headers:{
@@ -220,6 +249,7 @@ export default function Products() {
            })
     // console.log(data.product);
         toast.success('Product Added successfully')
+        
         getProducts(); 
       } catch (error) {
         toast.error('Failed to Add')
@@ -234,10 +264,16 @@ export default function Products() {
         formData.append("price", data.price);
         formData.append("stock", data.stock);
         formData.append("brand_id", data.brand_id);
+        formData.append("subcategory_id", data.subcategory_id);
         formData.append("description", data.description);
         formData.append("features", data.features);
         if (data.cover_image && data.cover_image[0]) {
           formData.append("cover_image", data.cover_image[0]);
+        }
+        if (data.images instanceof FileList) {
+          Array.from(data.images).forEach((image, index) => {
+            formData.append(`images`, image);
+          });
         }
         let res = await axios.put(`https://mcishop.vercel.app/api/v1/products/${slug}` , formData , {
           headers:{
@@ -252,10 +288,54 @@ export default function Products() {
         console.log(error);
       }
      }
+
+     async function getBrands(){
+      try {
+        const {data} = await axios.get('https://mcishop.vercel.app/api/v1/brands')
+           console.log(data);
+        setBrands(data?.brands)
+            //  const transData = data?.brands.map((brand)=>({
+            
+            //   slug : brand.slug,
+            //   id: brand.id, 
+            //   name: brand.name,
+            //  }))
+             
+             setLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }  
+            
+       }
+     async function getCategories(){
+      try {
+        const {data} = await axios.get('https://mcishop.vercel.app/api/v1/categories')
+           console.log(data);
+        setCats(data?.categories)
+            //  const transData = data?.brands.map((brand)=>({
+            
+            //   slug : brand.slug,
+            //   id: brand.id, 
+            //   name: brand.name,
+            //  }))
+             
+             setLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }  
+            
+       }
+     
    
     useEffect(()=>{
        getProducts()
     }, [])
+    useEffect(()=>{
+       getBrands()
+    }, [brands])
+    useEffect(()=>{
+       getCategories()
+    }, [cats])
   
     return <>
     <Helmet>
@@ -367,21 +447,55 @@ export default function Products() {
                        </div>
                    </>
                     }
-                   <input 
-                
-                {...register("brand_id" , {required:"Product brand_id is required!" ,
-                  pattern:{
-                    value:/^[a-f\d]{24}$/i,
-                   message:"Invalid brand!"
-                  } 
-           }) }
-                   className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter product brand_id'/>
-                   {errors.brand_id && <>
+                 <select
+  {...register("brand_id", {
+    required: "Product brand_id is required!",
+    pattern: {
+      value: /^[a-f\d]{24}$/i,
+      message: "Invalid brand!",
+    },
+  })}
+  className="w-100 shadow-sm p-2 mb-4 border placeholder-white rounded"
+>
+  <option value="">Select a Brand</option>
+  {brands?.map((brand) => (
+    <option key={brand._id} value={brand._id}>
+      {brand.name}
+    </option>
+  ))}
+</select>
+ {errors.brand_id && <>
                        <div className="mb-3 bg-danger rounded p-1">
                           <p>{errors.brand_id.message}</p>
                        </div>
                    </>
                     }
+                 <select
+  {...register("subcategory_id", {
+    required: "Product subcategory_id is required!",
+    pattern: {
+      value: /^[a-f\d]{24}$/i,
+      message: "Invalid brand!",
+    },
+  })}
+  className="w-100 shadow-sm p-2 mb-4 border placeholder-white rounded"
+>
+  <option value="">Select a Subcategory</option>
+  {cats?.map((cat) => (
+          cat.subcategories.map((subcat)=>(
+            <option key={subcat._id} value={subcat._id}>
+            {subcat.name}
+          </option>
+          ))
+  ))}
+</select>
+ {errors.subcategory_id && <>
+                       <div className="mb-3 bg-danger rounded p-1">
+                          <p>{errors.subcategory_id.message}</p>
+                       </div>
+                   </>
+                    }
+                   
                    <input 
             
                 {...register("cover_image" , {required:"Product cover_image is required!" ,
@@ -394,13 +508,41 @@ export default function Products() {
                       files[0]?.size < 2 * 1024 * 1024 || "File size should be less than 2MB",
                      },
            }) }
-                   className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="file" placeholder='choose file'/>
+                   className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded'
+                    type="file" placeholder='choose file'
+                    onChange={handleImageChange}
+                    />
                    {errors.cover_image && <>
                        <div className="mb-3 bg-danger rounded p-1">
                           <p>{errors.cover_image.message}</p>
                        </div>
                    </>
                     }
+                   <input
+  type="file"
+  multiple
+  {...register("images", {
+    required: false,
+    validate: {
+      isFileTypeValid: (files) =>
+        files.length > 0 &&
+        Array.from(files).every(
+          (file) => ["image/jpeg", "image/png"].includes(file.type)
+        ) || "Only JPG or PNG files are allowed",
+
+      isFileSizeValid: (files) =>
+        files.length > 0 &&
+        Array.from(files).every((file) => file.size < 2 * 1024 * 1024) ||
+        "Each file size should be less than 2MB",
+    },
+  })}
+  onChange={(e) => console.log(e.target.files)}
+  className="w-100 shadow-sm p-2 mb-4 border placeholder-white rounded"
+/>
+
+
+
+
                 
                    <button  className='btn btn-danger  p-2 '>{editMode? "Update" :"Add"}</button>
              </form>
@@ -450,10 +592,20 @@ export default function Products() {
                         <img loading='lazy' src={selectedRow.cover_image} alt={selectedRow.description} className='w-50 h-25 my-3' style={{height:''}} />
 
             </div>
+             <h5> Product Images:</h5>
+             <div className='w-100 d-flex justify-content-between align-items-center mb-3'>
+            {selectedRow.images?.map((image)=>(
+              <div className=' d-flex justify-content-center align-items-center  '>
+              <img loading='lazy' src={image.image_id.path} alt={selectedRow.description} className='w-50' style={{height:''}} />
+                </div>
+            ))}
+            </div>
               <Typography className='mb-3'><strong>ID:</strong> {selectedRow.id}.</Typography>
               <Typography className='mb-3'><strong>Title:</strong> {selectedRow.title}.</Typography>
               <Typography className='mb-3'><strong>Price:</strong> {selectedRow.price} EGP.</Typography>
               <Typography className='mb-3'><strong>Brand:</strong> {selectedRow.brand}. </Typography>
+              <Typography className='mb-3'><strong>Category:</strong> {selectedRow.category}. </Typography>
+              <Typography className='mb-3'><strong>Subcategory:</strong> {selectedRow.subcategory}. </Typography>
               <Typography className='mb-3'><strong>Description:</strong> {selectedRow.description}. </Typography>
               <Typography className='mb-3'><strong>Features:</strong> {selectedRow.features}. </Typography>
               <Typography><strong>Stock:</strong> {selectedRow.stock}. </Typography>
