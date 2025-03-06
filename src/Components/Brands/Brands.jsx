@@ -128,7 +128,7 @@ async function onSunmit (values){
    async function getBrands(){
    try {
      const {data} = await axios.get('https://mcishop.vercel.app/api/v1/brands')
-        console.log(data);
+        // console.log(data);
      //setProducts(data?.products)
           const transData = data?.brands.map((brand)=>({
            slug : brand.slug,
@@ -200,6 +200,9 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to Add')
        console.log(error);
+       console.log(error?.response.data.message);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+          toast.error('Brand already exist!')
      }
     }
     async function updateBrand(slug , data ) {
@@ -222,8 +225,12 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to update' , error.message)
        console.log(error);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+        toast.error('Brand already exist!')
      }
     }
+   
+    
   
    useEffect(()=>{
       getBrands()
@@ -246,7 +253,7 @@ async function onSunmit (values){
        className='di'
        visible={visible}
        onClose={closeDialog}
-       title={editMode===true ? "Update product " : "Add new product"}
+       title={editMode===true ? "Update brand " : "Add new brand"}
        footer={[
          <button className='btn btn-outline-danger' key="close" onClick={closeDialog}>
            Close
@@ -257,28 +264,31 @@ async function onSunmit (values){
             <form className='p-10 ' action="" onSubmit={handleSubmit(onSunmit)}>
                <input 
                
-             {...register("name" , {required:"Product name is required!" ,
+             {...register("name" , {required:"Brand name is required!" ,
          maxLength:{
            value:200,
-           message:"Product name must be from 3 to 100 letters!"
+           message:"Brand name must be from 3 to 100 letters!"
          } , minLength:{
            value:3,
-           message:"Product name must be from 3 to 100 letters!"
+           message:"Brand name must be from 3 to 100 letters!"
          } , pattern:{
            value:/^[A-Za-z]+$/i,
           message:"Invalid name!"
          } 
         }) }
-                className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter product title'/>
-                {errors.name && <>
-                    <div className="mb-3 bg-danger rounded p-1">
-                       <p>{errors.name.message}</p>
-                    </div>
-                </>
-                 }
+                className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter brand name'/>
+                { 
+                    errors.name && <>
+                      <div className="mb-3 bg-danger rounded p-1">
+                         <p>{errors.name.message}</p>
+                      </div>
+                  </>
+                     
+                  
+                   }
                   <input 
            
-               {...register("logo" , {required:"Product logo is required!" ,
+               {...register("logo" , {required:"Brand logo is required!" ,
                  validate: {
                    isFileTypeValid: (files) =>
                      ["image/jpeg", "image/png"].includes(files[0]?.type) ||
@@ -289,11 +299,13 @@ async function onSunmit (values){
                     },
           }) }
                   className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="file" placeholder='choose file'/>
-                  {errors.logo && <>
+                  {
+                    errors.logo && <>
                       <div className="mb-3 bg-danger rounded p-1">
                          <p>{errors.logo.message}</p>
                       </div>
                   </>
+                  
                    }
                
                   <button  className='btn btn-danger  p-2 '>{editMode? "Update" :"Add"}</button>

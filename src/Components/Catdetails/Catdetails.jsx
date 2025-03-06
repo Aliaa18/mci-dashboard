@@ -212,6 +212,8 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to Add')
        console.log(error);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+        toast.error('Subcategory already exist!')
      }
     }
     async function updateSubcat(subslug , data ) {
@@ -231,6 +233,8 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to update' , error.message)
        console.log(error);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+        toast.error('Subcategory already exist!')
      }
     }
 

@@ -203,6 +203,8 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to Add')
        console.log(error);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+        toast.error('Product already exist!')
      }
     }
     async function updateCategory(slug , data ) {
@@ -221,6 +223,8 @@ async function onSunmit (values){
      } catch (error) {
        toast.error('Failed to update' , error.message)
        console.log(error);
+       if (error?.response.data.message.includes("E11000 duplicate key error") )
+        toast.error('Category already exist!')
      }
     }
 
@@ -273,7 +277,7 @@ async function onSunmit (values){
           message:"Invalid name!"
          } 
         }) }
-                className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter product title'/>
+                className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter category name'/>
                 {errors.name && <>
                     <div className="mb-3 bg-danger rounded p-1">
                        <p>{errors.name.message}</p>

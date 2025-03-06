@@ -138,14 +138,14 @@ export default function Products({ existingImages = [] }) {
  
  async function onSunmit (values){
     if(editMode===true ){
-       console.log(values);
+      //  console.log(values);
      await updateProduct( values.slug ,values)
      setTimeout(()=>{
       closeDialog()
      } , 1000)
     
     } else {
-      console.log(values);
+      // console.log(values);
       addProduct(values)
        
    setTimeout(()=>{
@@ -234,8 +234,8 @@ export default function Products({ existingImages = [] }) {
         if (data.cover_image && data.cover_image[0]) {
           formData.append("cover_image", data.cover_image[0]);
         }
-        console.log("Images Data:", data);
-         console.log("Type of images:", typeof data.images);
+        // console.log("Images Data:", data);
+        //  console.log("Type of images:", typeof data.images);
 
          if (data.images instanceof FileList) {
           Array.from(data.images).forEach((image, index) => {
@@ -254,6 +254,8 @@ export default function Products({ existingImages = [] }) {
       } catch (error) {
         toast.error('Failed to Add')
         console.log(error);
+        if (error?.response.data.message.includes("E11000 duplicate key error") )
+          toast.error('Product already exist!')
       }
      }
      async function updateProduct(slug , data ) {
@@ -280,12 +282,14 @@ export default function Products({ existingImages = [] }) {
            "Content-Type": "multipart/form-data"
           }
            })
-     console.log(formData);
+    //  console.log(formData);
         toast.success('Product updated successfully')
         getProducts(); 
       } catch (error) {
         toast.error('Failed to update')
         console.log(error);
+        if (error?.response.data.message.includes("E11000 duplicate key error") )
+          toast.error('Product already exist!')
       }
      }
 
