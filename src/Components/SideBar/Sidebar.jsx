@@ -20,6 +20,11 @@ export default function Sidebar() {
                 <i className=" fa-regular fa-square-check fa-lg" style={{color:" #000000"}}></i>     <h5> Categories </h5>
                 </div>
                 </Link>
+                <Link to={'/users'}>
+                <div className='item w-75 ms-auto mb-5 d-flex justify-content-around align-items-center'>
+                <i  class="fa-regular fa-circle-user fa-lg" style={{color:" #000000"}}></i>     <h5> Users </h5>
+                </div>
+                </Link>
                
                 
         

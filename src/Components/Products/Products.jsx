@@ -371,8 +371,8 @@ export default function Products({ existingImages = [] }) {
                 
               {...register("title" , {required:"Product title is required!" ,
           maxLength:{
-            value:200,
-            message:"Product title must be from 3 to 100 letters!"
+            value:1000,
+            message:"Product title must be from 3 to 1000 letters!"
           } , minLength:{
             value:3,
             message:"Product title must be from 3 to 100 letters!"

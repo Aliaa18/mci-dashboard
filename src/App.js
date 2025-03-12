@@ -12,6 +12,7 @@ import Users from './Components/Users/Users';
 import Categories from './Components/Categories/Categories';
 import Subcategories from './Components/Subcategories/Subcategories';
 import Catdetails from './Components/Catdetails/Catdetails';
+import UserOrders from './Components/UserOrders/UserOrders';
 
 function App() {
   let router = createHashRouter([
@@ -25,6 +26,7 @@ function App() {
         {path:"/subcategories" , element:<Subcategories/>},
         {path:"/orders" , element:<Orders/>},
         {path:"/users" , element:<Users/>},
+        {path:"/userOrders/:user_id" , element:<UserOrders/>},
         {path:"/sidebar" , element:<Sidebar/>},
       ]
     }
