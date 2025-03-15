@@ -272,7 +272,7 @@ async function onSunmit (values){
            value:3,
            message:"Brand name must be from 3 to 100 letters!"
          } , pattern:{
-           value:/^[A-Za-z]+$/i,
+           value:/^[A-Za-z\s]+$/i,
           message:"Invalid name!"
          } 
         }) }
@@ -291,7 +291,7 @@ async function onSunmit (values){
                {...register("logo" , {required:"Brand logo is required!" ,
                  validate: {
                    isFileTypeValid: (files) =>
-                     ["image/jpeg", "image/png"].includes(files[0]?.type) ||
+                     ["image/jpeg", "image/png" , "image/webp"].includes(files[0]?.type) ||
                      "Only JPG or PNG files are allowed",
                    // Check file size (e.g., < 2MB)
                    isFileSizeValid: (files) =>

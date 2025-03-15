@@ -254,8 +254,8 @@ export default function Products({ existingImages = [] }) {
       } catch (error) {
         toast.error('Failed to Add')
         console.log(error);
-        // if (error?.response.data.message.includes("E11000 duplicate key error") )
-        //   toast.error('Product already exist!')
+        if (error?.response.data.message.includes("E11000 duplicate key error") )
+          toast.error('Product already exist!')
       }
      }
      async function updateProduct(slug , data ) {
