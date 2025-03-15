@@ -261,7 +261,7 @@ async function onSunmit (values){
          </button>,
        ]}
      >
-        <div className='  mx-auto '>
+        <div className=' mx-auto '>
             <form className='p-10 ' action="" onSubmit={handleSubmit(onSunmit)}>
                <input 
                
@@ -273,7 +273,7 @@ async function onSunmit (values){
            value:3,
            message:"Category name must be from 3 to 100 letters!"
          } , pattern:{
-           value:/^[A-Za-z]+$/i,
+           value:/^[A-Za-z\s]+$/i,
           message:"Invalid name!"
          } 
         }) }
