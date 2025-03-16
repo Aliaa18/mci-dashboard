@@ -627,6 +627,7 @@ export default function Products({ existingImages = [] }) {
               <Typography className='mb-3'><strong>Subcategory:</strong> {selectedRow.subcategory}. </Typography>
               <Typography className='mb-3'><strong>Description:</strong> {selectedRow.description}. </Typography>
               <Typography className='mb-3'><strong>Features:</strong> {selectedRow.features}. </Typography>
+              <Typography className='mb-3'><strong>Applications:</strong> {selectedRow.apps}. </Typography>
               <Typography><strong>Stock:</strong> {selectedRow.stock}. </Typography>
             </div>
           )}
