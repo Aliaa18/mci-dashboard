@@ -41,6 +41,7 @@ export default function Products({ existingImages = [] }) {
     stock: '',
     description: ' ',
     features:' ',
+    apps:'',
     cover_image: null,
     images:[]
    })
@@ -67,6 +68,7 @@ export default function Products({ existingImages = [] }) {
         description: ' ',
         features:' ',
         cover_image: '',
+        apps:'',
         images:[],
       });
       reset()
@@ -165,6 +167,7 @@ export default function Products({ existingImages = [] }) {
             id: pro.id, 
             title: pro.title,
             price: pro.price,
+            apps: pro.apps,
             brand_id:pro.brand_id?._id || '--',
             subcategory_id:pro.subcategory_id?._id || '--',
             brand: pro.brand_id?.name || '--',
@@ -229,6 +232,7 @@ export default function Products({ existingImages = [] }) {
         formData.append("stock", data.stock);
         formData.append("brand_id", data.brand_id);
         formData.append("subcategory_id", data.subcategory_id);
+        formData.append("apps", data.apps);
         formData.append("description", data.description);
         formData.append("features", data.features);
         if (data.cover_image && data.cover_image[0]) {
@@ -267,6 +271,7 @@ export default function Products({ existingImages = [] }) {
         formData.append("stock", data.stock);
         formData.append("brand_id", data.brand_id);
         formData.append("subcategory_id", data.subcategory_id);
+        formData.append("apps", data.apps);
         formData.append("description", data.description);
         formData.append("features", data.features);
         if (data.cover_image && data.cover_image[0]) {
@@ -405,6 +410,16 @@ export default function Products({ existingImages = [] }) {
                   }
                 <input 
                 
+              {...register("apps" ) }
+                 className='w-100 shadow-sm p-2 mb-4 border    placeholder-white rounded' type="text" placeholder='enter product applications'/>
+                 {errors.apps && <>
+                     <div className="mb-3 bg-danger rounded p-1">
+                        <p>{errors.apps.message}</p>
+                     </div>
+                 </>
+                  }
+                <input 
+                
               {...register("features" , { required:"Product description is required!" ,
           maxLength:{
             value:10000,
@@ -505,8 +520,8 @@ export default function Products({ existingImages = [] }) {
                 {...register("cover_image" , {required:"Product cover_image is required!" ,
                   validate: {
                     isFileTypeValid: (files) =>
-                      ["image/jpeg", "image/png"].includes(files[0]?.type) ||
-                      "Only JPG or PNG files are allowed",
+                      ["image/jpeg", "image/png" , "image/webp"].includes(files[0]?.type) ||
+                      "Only JPG, PNG or WEBP files are allowed",
                     // Check file size (e.g., < 2MB)
                     isFileSizeValid: (files) =>
                       files[0]?.size < 2 * 1024 * 1024 || "File size should be less than 2MB",
@@ -531,8 +546,8 @@ export default function Products({ existingImages = [] }) {
       isFileTypeValid: (files) =>
         files.length > 0 &&
         Array.from(files).every(
-          (file) => ["image/jpeg", "image/png"].includes(file.type)
-        ) || "Only JPG or PNG files are allowed",
+          (file) => ["image/jpeg", "image/png" , "image/webp"].includes(file.type)
+        ) || "Only JPG , PNG or WEBP files are allowed",
 
       isFileSizeValid: (files) =>
         files.length > 0 &&
